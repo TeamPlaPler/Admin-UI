@@ -11,14 +11,16 @@ import {
   PieChartOutlined,
   UserOutlined,
   ScheduleOutlined,
-  CodeSandboxOutlined,
   SendOutlined,
   FileDoneOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import Home from "./Home";
 import Users from "./Users";
 import ManageBlogPost from "./Screen/Blog/ManageBlogPost";
+import ManageFAQ from "./Screen/FAQ/ManageFAQ";
+import ManagerestaurantTypes from "./Screen/restaurantTypes/ManageRestaurantTypes";
 
 const { Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -32,15 +34,18 @@ function getItem(label, key, icon, children) {
 
 const items = [
   getItem("Welcome", "1", <PieChartOutlined />),
-  getItem("Users", "2", <UsergroupAddOutlined />),
-  getItem("Restaurants", "3", <ScheduleOutlined />),
-  getItem("3D models", "4", <CodeSandboxOutlined />),
-  getItem("Manage blog", "5", <FileDoneOutlined />),
-  {
-    type: "divider",
-  },
-  getItem("feedback", "6", <SendOutlined />),
-  getItem("my profile", "7", <UserOutlined />),
+  getItem("Restaurants", "2", <ScheduleOutlined />),
+  // getItem("3D models", "4", <CodeSandboxOutlined />),
+  getItem("Manage blog", "3", <FileDoneOutlined />),
+  // getItem("feedback", "6", <SendOutlined />),
+  getItem("faq", "4", <SendOutlined />),
+  getItem("Categories", "sub1", <AppstoreOutlined />, [
+    getItem("Restaurant Types", "5"),
+    getItem("Order Types", "6"),
+    getItem("Plans", "7"),
+  ]),
+  getItem("Users", "8", <UsergroupAddOutlined />),
+  getItem("my profile", "9", <UserOutlined />),
 ];
 
 const Navigation = () => {
@@ -60,11 +65,17 @@ const Navigation = () => {
     if (e.key === "1") {
       setRedirectLink("/");
     }
-    if (e.key === "2") {
+    if (e.key === "8") {
       setRedirectLink("/users");
     }
-    if (e.key === "5") {
+    if (e.key === "3") {
       setRedirectLink("/manageBlogPost");
+    }
+    if (e.key === "4") {
+      setRedirectLink("/manageFaq");
+    }
+    if (e.key === "5") {
+      setRedirectLink("/ManagerestaurantTypes");
     }
   };
 
@@ -152,7 +163,18 @@ const Navigation = () => {
                 path="/manageBlogPost"
                 element={<ManageBlogPost key={"manageBlogPost"} />}
               />
-              {/* <Route exact path="/abcd" element={<Home key={"home"} />  } />   */}
+              <Route
+                exact
+                path="/manageFaq"
+                element={<ManageFAQ key={"manageFAQ"} />}
+              />
+              <Route
+                exact
+                path="/ManagerestaurantTypes"
+                element={
+                  <ManagerestaurantTypes key={"ManagerestaurantTypes"} />
+                }
+              />
             </Routes>
           </Router>
         </Content>

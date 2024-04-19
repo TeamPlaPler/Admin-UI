@@ -137,7 +137,7 @@ const AntTable = (props) => {
       ...getColumnSearchProps("title"),
       sorter: (a, b) => a.address.length - b.address.length,
       sortDirections: ["descend", "ascend"],
-      render: (text) => <a href="./">{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
   ];
   const actionConfig = [
