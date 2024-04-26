@@ -10,7 +10,7 @@ import {
   UsergroupAddOutlined,
   PieChartOutlined,
   UserOutlined,
-  ScheduleOutlined,
+  ShopOutlined,
   SendOutlined,
   FileDoneOutlined,
   AppstoreOutlined,
@@ -21,6 +21,10 @@ import Users from "./Users";
 import ManageBlogPost from "./Screen/Blog/ManageBlogPost";
 import ManageFAQ from "./Screen/FAQ/ManageFAQ";
 import ManagerestaurantTypes from "./Screen/restaurantTypes/ManageRestaurantTypes";
+import ManageorderTypes from "./Screen/orderTypes/ManageOrderTypes";
+import Manageplans from "./Screen/plans/ManagePlans";
+import ManageFoodTypes from "./Screen/foodTypes/ManageFoodTypes";
+import Managerestaurants from "./Screen/restaurants/ManageRestaurants";
 
 const { Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -34,7 +38,7 @@ function getItem(label, key, icon, children) {
 
 const items = [
   getItem("Welcome", "1", <PieChartOutlined />),
-  getItem("Restaurants", "2", <ScheduleOutlined />),
+  getItem("Restaurants", "2", <ShopOutlined />),
   // getItem("3D models", "4", <CodeSandboxOutlined />),
   getItem("Manage blog", "3", <FileDoneOutlined />),
   // getItem("feedback", "6", <SendOutlined />),
@@ -43,9 +47,10 @@ const items = [
     getItem("Restaurant Types", "5"),
     getItem("Order Types", "6"),
     getItem("Plans", "7"),
+    getItem("Food Types", "8"),
   ]),
-  getItem("Users", "8", <UsergroupAddOutlined />),
-  getItem("my profile", "9", <UserOutlined />),
+  getItem("Users", "18", <UsergroupAddOutlined />),
+  getItem("my profile", "19", <UserOutlined />),
 ];
 
 const Navigation = () => {
@@ -65,6 +70,9 @@ const Navigation = () => {
     if (e.key === "1") {
       setRedirectLink("/");
     }
+    if (e.key === "2") {
+      setRedirectLink("/Managerestaurants");
+    }
     if (e.key === "8") {
       setRedirectLink("/users");
     }
@@ -76,6 +84,15 @@ const Navigation = () => {
     }
     if (e.key === "5") {
       setRedirectLink("/ManagerestaurantTypes");
+    }
+    if (e.key === "6") {
+      setRedirectLink("/ManageorderTypes");
+    }
+    if (e.key === "7") {
+      setRedirectLink("/Manageplans");
+    }
+    if (e.key === "8") {
+      setRedirectLink("/ManageFoodTypes");
     }
   };
 
@@ -165,6 +182,11 @@ const Navigation = () => {
               />
               <Route
                 exact
+                path="/Managerestaurants"
+                element={<Managerestaurants key={"Managerestaurants"} />}
+              />
+              <Route
+                exact
                 path="/manageFaq"
                 element={<ManageFAQ key={"manageFAQ"} />}
               />
@@ -174,6 +196,21 @@ const Navigation = () => {
                 element={
                   <ManagerestaurantTypes key={"ManagerestaurantTypes"} />
                 }
+              />
+              <Route
+                exact
+                path="/ManageorderTypes"
+                element={<ManageorderTypes key={"ManageorderTypes"} />}
+              />
+              <Route
+                exact
+                path="/Manageplans"
+                element={<Manageplans key={"Manageplans"} />}
+              />
+              <Route
+                exact
+                path="/ManageFoodTypes"
+                element={<ManageFoodTypes key={"ManageFoodTypes"} />}
               />
             </Routes>
           </Router>

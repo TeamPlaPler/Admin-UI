@@ -1,5 +1,5 @@
 import React from "react";
-import { Breadcrumb, theme } from "antd";
+import { Breadcrumb, Divider, theme } from "antd";
 
 function Home() {
   const {
@@ -14,7 +14,7 @@ function Home() {
         }}
       >
         <Breadcrumb.Item key={1}>Home</Breadcrumb.Item>
-        <Breadcrumb.Item key={2}>Welcoom</Breadcrumb.Item>
+        <Breadcrumb.Item key={2}>Welcome</Breadcrumb.Item>
       </Breadcrumb>
       <div
         style={{
@@ -24,7 +24,22 @@ function Home() {
           borderRadius: borderRadiusLG,
         }}
       >
-        <h1>3D Model home </h1>{" "}
+        <h1>
+          {" "}
+          Welcome to{" "}
+          <a href="https://www.plaper.ca" target="_blank">
+            plaper.ca{" "}
+          </a>{" "}
+          admin app
+        </h1>
+
+        <Divider dashed />
+
+        <img
+          src="https://cdn3d.iconscout.com/3d/premium/thumb/fast-food-5727930-4800414.png"
+          height="500px"
+          width="500px"
+        />
       </div>
     </>
   );
