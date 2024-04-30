@@ -5,8 +5,9 @@ import {
   EditOutlined,
   DeleteOutlined,
   EyeOutlined,
+  MoreOutlined,
 } from "@ant-design/icons";
-import { Button, Input, Space, Table, Modal } from "antd";
+import { Button, Input, Space, Table, Modal, Dropdown } from "antd";
 import Highlighter from "react-highlight-words";
 const { confirm } = Modal;
 
@@ -133,21 +134,62 @@ const AntTable = (props) => {
       title: "Title",
       dataIndex: "title",
       key: "title",
-      width: "15%",
+      width: "10%",
+      ellipsis: true,
+      // fixed: "left",
       ...getColumnSearchProps("title"),
       sorter: (a, b) => a.address.length - b.address.length,
       sortDirections: ["descend", "ascend"],
       render: (text) => <span>{text}</span>,
     },
   ];
+  const items = [
+    {
+      key: "view",
+      label: "View",
+    },
+    {
+      key: "edit",
+      label: "Edit",
+    },
+    {
+      key: "delete",
+      label: "Delete",
+    },
+  ];
+
   const actionConfig = [
     {
       title: "Action",
       key: "action",
-      width: "15%",
+      width: "5%",
+      // fixed  : "right",
       render: (_, record) => (
         <Space size="middle">
-          <span
+          <Space size="middle">
+            <Dropdown
+              menu={{
+                items,
+                onClick: ({ key }) => {
+                  if (key === "view") {
+                    viewRecord(record);
+                  }
+                  if (key === "edit") {
+                    handelEdit(record);
+                  }
+                  if (key === "delete") {
+                    handelDelete(record);
+                  }
+                },
+              }}
+            >
+              <a>
+                <MoreOutlined />
+              </a>
+            </Dropdown>
+          </Space>
+
+          {/* <span
             style={{
               cursor: "pointer",
               color: "green",
@@ -189,7 +231,7 @@ const AntTable = (props) => {
             }}
           >
             <DeleteOutlined /> Delete
-          </span>
+          </span> */}
         </Space>
       ),
     },
@@ -232,7 +274,10 @@ const AntTable = (props) => {
       columns={columnConfigWihtSearch}
       dataSource={tableData}
       pagination={{ pageSize: 5 }}
-      scroll={{ y: 240 }}
+      scroll={{
+        // x: "calc(500px + 50%)",
+        y: 240,
+      }}
       showSorterTooltip={{
         target: "sorter-icon",
       }}

@@ -32,7 +32,7 @@ const restaurantTypesTableConfig = [
     title: "Created by",
     dataIndex: "createdBy",
     key: "createdBy",
-    width: "25%",
+    width: "20%",
     render: (_, record) => (
       <Tooltip title={record.createdAt}>
         <span key={"createdBY"}>{record.createdBy}</span>
@@ -43,7 +43,7 @@ const restaurantTypesTableConfig = [
     title: "Updated by",
     dataIndex: "updatedBy",
     key: "updatedBy",
-    width: "25%",
+    width: "20%",
     render: (_, record) => (
       <Tooltip title={record.updatedAt}>
         <span key={"updatedby"}>{record.updatedBy}</span>

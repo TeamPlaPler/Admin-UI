@@ -1,18 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, Input, Row, Select, Upload, Image } from "antd";
+import { Col, Form, Input, Row, Select, Button } from "antd";
 import "react-quill/dist/quill.snow.css";
 import TextArea from "antd/es/input/TextArea";
-import { ShopOutlined, PlusOutlined } from "@ant-design/icons";
+import { ShopOutlined } from "@ant-design/icons";
 import { getActivePlansTypes } from "../CommonService";
 import { failedNotification } from "../../../ReusableComp/Notifications";
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
+
+const Step3 = ({ onDataUpdate, formData, goNext }) => {
+  const [localFormData, setLocalFormData] = useState({
+    paymentInfo: formData.paymentInfo || "",
+    address: formData.address || "",
+    postalCode: formData.postalCode || "",
+    additionalInfo: formData.additionalInfo || "",
+    plan: formData.plan || "",
+    additionalDocs: [],
   });
-const Step3 = (props) => {
+
+  useEffect(() => {
+    onDataUpdate(localFormData);
+  }, [localFormData]);
+
+  const onFinish = () => {
+    goNext();
+  };
+  const inputChanged = (e, inputField) => {
+    setLocalFormData({
+      ...localFormData,
+      [inputField]: e.target.value,
+    });
+  };
   const [plans, setPlans] = useState([]);
 
   useEffect(() => {
@@ -33,91 +49,29 @@ const Step3 = (props) => {
       });
   }, []);
 
-  const handleChange = (value) => {
+  const handleChange = (value, inputField) => {
     console.log(`selected ${value}`);
+    setLocalFormData({
+      ...localFormData,
+      [inputField]: value,
+    });
   };
-  // ------------------
-
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    // {
-    //   uid: "-2",
-    //   name: "image.png",
-    //   status: "done",
-    //   url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    // },
-    // {
-    //   uid: "-3",
-    //   name: "image.png",
-    //   status: "done",
-    //   url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    // },
-    // {
-    //   uid: "-4",
-    //   name: "image.png",
-    //   status: "done",
-    //   url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    // },
-    // {
-    //   uid: "-xxx",
-    //   percent: 50,
-    //   name: "image.png",
-    //   status: "uploading",
-    //   url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    // },
-    // {
-    //   uid: "-5",
-    //   name: "image.png",
-    //   status: "error",
-    // },
-  ]);
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
-  // const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
-  );
 
   return (
     <>
       <div style={{ padding: "20px" }}>
         <Form
           layout="vertical"
-          // onFinish={onFinish}
+          onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
-          // initialValues={{
-          //   title: props.formData.title || "",
-          //   isActive: props.formData.isActive || false,
-          //   desc: props.formData.desc || "",
-          //   logo: props.formData.logo || "",
-          // }}
+          initialValues={{
+            paymentInfo: formData.paymentInfo || "",
+            address: formData.address || "",
+            postalCode: formData.postalCode || "",
+            additionalInfo: formData.additionalInfo || "",
+            plan: formData.plan || "",
+            additionalDocs: [],
+          }}
         >
           <Row gutter={16}>
             <Col span={12}>
@@ -137,8 +91,9 @@ const Step3 = (props) => {
                     width: "100%",
                   }}
                   placeholder="Please select Plan"
-                  // defaultValue={['a10', 'c12']}
-                  onChange={handleChange}
+                  onChange={(value) => {
+                    handleChange(value, "plan");
+                  }}
                   options={plans}
                 />
               </Form.Item>
@@ -154,7 +109,13 @@ const Step3 = (props) => {
                   },
                 ]}
               >
-                <TextArea rows={3} placeholder="Please enter Payment Info" />
+                <TextArea
+                  rows={3}
+                  placeholder="Please enter Payment Info"
+                  onChange={(e) => {
+                    inputChanged(e, "paymentInfo");
+                  }}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -173,6 +134,9 @@ const Step3 = (props) => {
                 <TextArea
                   rows={3}
                   placeholder="Please enter Restorent Address"
+                  onChange={(e) => {
+                    inputChanged(e, "address");
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -190,6 +154,9 @@ const Step3 = (props) => {
                 <Input
                   placeholder="Please enter Restaurant Postal Code"
                   prefix={<ShopOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "postalCode");
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -206,7 +173,13 @@ const Step3 = (props) => {
                   },
                 ]}
               >
-                <TextArea rows={3} placeholder="Please enter Additional Info" />
+                <TextArea
+                  rows={3}
+                  placeholder="Please enter Additional Info"
+                  onChange={(e) => {
+                    inputChanged(e, "additionalInfo");
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -215,34 +188,25 @@ const Step3 = (props) => {
                 label="Additional Docs"
                 rules={[
                   {
-                    required: true,
+                    required: false,
                     message: "Please provide Additional Docs",
                   },
                 ]}
               >
-                <Upload
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                  listType="picture-card"
-                  fileList={fileList}
-                  onPreview={handlePreview}
-                  onChange={handleChange}
+                <input type="file" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ width: "100%" }}
                 >
-                  {fileList.length >= 8 ? null : uploadButton}
-                </Upload>
-                {previewImage && (
-                  <Image
-                    wrapperStyle={{
-                      display: "none",
-                    }}
-                    preview={{
-                      visible: previewOpen,
-                      onVisibleChange: (visible) => setPreviewOpen(visible),
-                      afterOpenChange: (visible) =>
-                        !visible && setPreviewImage(""),
-                    }}
-                    src={previewImage}
-                  />
-                )}
+                  Submit
+                </Button>
               </Form.Item>
             </Col>
           </Row>

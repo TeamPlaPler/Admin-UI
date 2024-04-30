@@ -1,18 +1,6 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  Row,
-  Spin,
-  Steps,
-  Switch,
-  theme,
-  message,
-} from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Col, Form, Input, Row, Switch } from "antd";
 import "react-quill/dist/quill.snow.css";
-import TextArea from "antd/es/input/TextArea";
 import {
   LinkOutlined,
   CrownOutlined,
@@ -22,20 +10,56 @@ import {
   DatabaseOutlined,
 } from "@ant-design/icons";
 
-const Step1 = (props) => {
+const Step1 = ({ onDataUpdate, formData, goNext }) => {
+  const [localFormData, setLocalFormData] = useState({
+    title: formData.title || "",
+    subTitle: formData.subTitle || "",
+    isActive: formData.isActive || false,
+    websiteLink: formData.websiteLink || "",
+    subDomain: formData.subDomain || "",
+    email: formData.email || "",
+    established: formData.established || "",
+    restaurantLogo: formData.restaurantLogo || "",
+  });
+
+  useEffect(() => {
+    onDataUpdate(localFormData);
+  }, [localFormData]);
+
+  const inputChanged = (e, inputField) => {
+    if (inputField !== "isActive") {
+      setLocalFormData({
+        ...localFormData,
+        [inputField]: e.target.value,
+      });
+    } else {
+      setLocalFormData({
+        ...localFormData,
+        [inputField]: e,
+      });
+    }
+  };
+  const onFinish = () => {
+    goNext();
+  };
+
   return (
     <>
       <div style={{ padding: "20px" }}>
         <Form
           layout="vertical"
-          // onFinish={onFinish}
+          onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
-          // initialValues={{
-          //   title: props.formData.title || "",
-          //   isActive: props.formData.isActive || false,
-          //   desc: props.formData.desc || "",
-          //   logo: props.formData.logo || "",
-          // }}
+          initialValues={{
+            title: formData.title || "",
+            subTitle: formData.subTitle || "",
+            isActive: formData.isActive || false,
+            websiteLink: formData.websiteLink || "",
+            subDomain: formData.subDomain || "",
+            email: formData.email || "",
+            established: formData.established || "",
+            restaurantLogo: formData.restaurantLogo || "",
+          }}
         >
           <Row gutter={16}>
             <Col span={20}>
@@ -51,6 +75,9 @@ const Step1 = (props) => {
               >
                 <Input
                   placeholder="Please enter Title"
+                  onChange={(e) => {
+                    inputChanged(e, "title");
+                  }}
                   prefix={<CrownOutlined />}
                 />
               </Form.Item>
@@ -61,7 +88,13 @@ const Step1 = (props) => {
                 valuePropName="checked"
                 label="isActive"
               >
-                <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
+                <Switch
+                  checkedChildren="Active"
+                  unCheckedChildren="Inactive"
+                  onChange={(e) => {
+                    inputChanged(e, "isActive");
+                  }}
+                />
               </Form.Item>
             </Col>
           </Row>
@@ -77,7 +110,12 @@ const Step1 = (props) => {
                   },
                 ]}
               >
-                <Input placeholder="Please enter Sub title" />
+                <Input
+                  placeholder="Please enter Sub title"
+                  onChange={(e) => {
+                    inputChanged(e, "subTitle");
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -94,6 +132,9 @@ const Step1 = (props) => {
                 <Input
                   placeholder="Please enter Web Site Link"
                   prefix={<LinkOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "websiteLink");
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -113,6 +154,9 @@ const Step1 = (props) => {
                 <Input
                   placeholder="Please enter Sub Domain"
                   prefix={<GlobalOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "subDomain");
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -130,6 +174,9 @@ const Step1 = (props) => {
                 <Input
                   placeholder="Please enter Email"
                   prefix={<MailOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "email");
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -146,7 +193,13 @@ const Step1 = (props) => {
                   },
                 ]}
               >
-                <Input placeholder="Established" prefix={<StarOutlined />} />
+                <Input
+                  placeholder="Established"
+                  prefix={<StarOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "established");
+                  }}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -163,30 +216,26 @@ const Step1 = (props) => {
                 <Input
                   placeholder="Please enter Restaurant Logo"
                   prefix={<DatabaseOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "restaurantLogo");
+                  }}
                 />
               </Form.Item>
             </Col>
           </Row>
-
-          {/* <Row gutter={16}>
-          <Col span={24}>
-            <Form.Item
-              name="desc"
-              label="desc"
-              rules={[
-                {
-                  required: true,
-                  message: "Please enter desc",
-                },
-              ]}
-            >
-              <TextArea rows={4} placeholder="Please enter description" />
-            </Form.Item>
-          </Col>
-        </Row> */}
-          {/* <Button type="primary" htmlType="submit">
-            Submit
-          </Button> */}
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ width: "100%" }}
+                >
+                  Next
+                </Button>
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </div>
     </>

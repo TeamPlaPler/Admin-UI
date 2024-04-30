@@ -1,51 +1,68 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  Row,
-  Spin,
-  Steps,
-  Switch,
-  theme,
-  message,
-} from "antd";
+import React, { useEffect, useState } from "react";
+import { Button, Steps, theme, Spin } from "antd";
 import "react-quill/dist/quill.snow.css";
 import { postrestaurantsData, putrestaurants } from "./RestaurantsService";
 import {
   failedNotification,
   successNotification,
 } from "../../ReusableComp/Notifications";
-import TextArea from "antd/es/input/TextArea";
 import Step1 from "./form/Step1";
 import Step2 from "./form/Step2";
 import Step3 from "./form/Step3";
 
 const RestaurantsForm = (props) => {
   const [isEdit] = useState(props.isEdit);
+  // props.formData
   const [loading, setLoading] = useState(false);
+
+  const [step1Data, setStep1Data] = useState(props.formData);
+  const [step2Data, setStep2Data] = useState(props.formData);
+  const [step3Data, setStep3Data] = useState(props.formData);
+
+  useEffect(() => {
+    console.log(step1Data);
+    console.log(step2Data);
+    console.log(step3Data);
+  }, [step1Data, step2Data, step3Data]);
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+  const Submit = () => {
+    console.log(step1Data);
+    console.log(step2Data);
+    console.log(step3Data);
+    onFinish({ ...step1Data, ...step2Data, ...step3Data });
+  };
 
   const steps = [
     {
       title: "First",
-      content: <Step1 />,
+      content: (
+        <Step1 formData={step1Data} onDataUpdate={setStep1Data} goNext={next} />
+      ),
     },
     {
       title: "Second",
-      content: <Step2 />,
+      content: (
+        <Step2 formData={step2Data} onDataUpdate={setStep2Data} goNext={next} />
+      ),
     },
     {
       title: "Last",
-      content: <Step3 />,
+      content: (
+        <Step3
+          formData={step3Data}
+          onDataUpdate={setStep3Data}
+          goNext={Submit}
+        />
+      ),
     },
   ];
 
   const { token } = theme.useToken();
   const [current, setCurrent] = useState(0);
-  const next = () => {
-    setCurrent(current + 1);
-  };
+
   const prev = () => {
     setCurrent(current - 1);
   };
@@ -114,103 +131,41 @@ const RestaurantsForm = (props) => {
         });
     }
   };
-  const onFinishFailed = () => {
-    failedNotification("Fill all required fileds ");
-  };
+  // const onFinishFailed = () => {
+  //   failedNotification("Fill all required fileds ");
+  // };
 
   return (
     <>
-      <Steps current={current} items={items} />
-      <div style={contentStyle}>{steps[current].content}</div>
-      <div
-        style={{
-          marginTop: 24,
-        }}
-      >
-        {current < steps.length - 1 && (
-          <Button type="primary" onClick={() => next()}>
-            Next
-          </Button>
-        )}
-        {current === steps.length - 1 && (
-          <Button
-            type="primary"
-            onClick={() => message.success("Processing complete!")}
-          >
-            Done
-          </Button>
-        )}
-        {current > 0 && (
-          <Button
-            style={{
-              margin: "0 8px",
-            }}
-            onClick={() => prev()}
-          >
-            Previous
-          </Button>
-        )}
-      </div>
-
-      {/* <Spin spinning={loading} delay={500}>
-        <Form
-          layout="vertical"
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          initialValues={{
-            title: props.formData.title || "",
-            isActive: props.formData.isActive || false,
-            desc: props.formData.desc || "",
-            logo: props.formData.logo || "",
+      <Spin spinning={loading} delay={500}>
+        <Steps current={current} items={items} />
+        <div style={contentStyle}>{steps[current].content}</div>
+        <div
+          style={{
+            marginTop: 24,
           }}
         >
-          <Row gutter={16}>
-            <Col span={20}>
-              <Form.Item
-                name="title"
-                label="Title"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter Title",
-                  },
-                ]}
-              >
-                <Input placeholder="Please enter Title" />
-              </Form.Item>
-            </Col>
-            <Col span={4}>
-              <Form.Item
-                name="isActive"
-                valuePropName="checked"
-                label="isActive"
-              >
-                <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
-              </Form.Item>
-            </Col>
-          </Row>
+          {current < steps.length - 1 && (
+            <Button type="primary" onClick={() => next()}>
+              temp Next
+            </Button>
+          )}
+          {current > 0 && (
+            <Button
+              style={{
+                margin: "0 8px",
+              }}
+              onClick={() => prev()}
+            >
+              Previous
+            </Button>
+          )}
+        </div>
 
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item
-                name="desc"
-                label="desc"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter desc",
-                  },
-                ]}
-              >
-                <TextArea rows={4} placeholder="Please enter description" />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form>
-      </Spin> */}
+        <Button type="primary" onClick={() => Submit()}>
+          Submit
+        </Button>
+      </Spin>
     </>
   );
 };

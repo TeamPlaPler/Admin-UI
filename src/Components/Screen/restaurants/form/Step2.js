@@ -1,23 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { Col, Form, Input, Row, Select, Upload, Image } from "antd";
+import { Col, Form, Input, Row, Select, Button } from "antd";
 import "react-quill/dist/quill.snow.css";
-import TextArea from "antd/es/input/TextArea";
-import { UserOutlined, PhoneOutlined, PlusOutlined } from "@ant-design/icons";
+import { UserOutlined, PhoneOutlined } from "@ant-design/icons";
 import {
   getActiveOrderTypes,
   getActiveRestaurantTypes,
 } from "../CommonService";
 import { failedNotification } from "../../../ReusableComp/Notifications";
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
+import TextArea from "antd/es/input/TextArea";
+
+const Step2 = ({ onDataUpdate, formData, goNext }) => {
+  const [localFormData, setLocalFormData] = useState({
+    pointOfContact: formData.pointOfContact || "",
+    phoneNumber: formData.phoneNumber || "",
+    timings: formData.timings || "",
+    restaurantType: formData.restaurantType || [],
+    orderType: formData.orderType || [],
   });
-const Step2 = (props) => {
+
+  useEffect(() => {
+    onDataUpdate(localFormData);
+  }, [localFormData]);
+
   const [restaurantTyes, setRestaurantTyes] = useState([]);
   const [orderTyes, setOrderTyes] = useState([]);
+
+  const inputChanged = (e, inputField) => {
+    setLocalFormData({
+      ...localFormData,
+      [inputField]: e.target.value,
+    });
+  };
+  const onFinish = () => {
+    goNext();
+  };
+
+  const handleChange = (value, inputField) => {
+    console.log(`selected ${value}`);
+    setLocalFormData({
+      ...localFormData,
+      [inputField]: value,
+    });
+  };
 
   useEffect(() => {
     getActiveRestaurantTypes()
@@ -54,80 +78,20 @@ const Step2 = (props) => {
       });
   }, []);
 
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-  // ------------------
-
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-
-    {
-      uid: "-4",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-xxx",
-      percent: 50,
-      name: "image.png",
-      status: "uploading",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-5",
-      name: "image.png",
-      status: "error",
-    },
-  ]);
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
-  // const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </button>
-  );
-
   return (
     <>
       <div style={{ padding: "20px" }}>
         <Form
           layout="vertical"
-          // onFinish={onFinish}
+          onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
-          // initialValues={{
-          //   title: props.formData.title || "",
-          //   isActive: props.formData.isActive || false,
-          //   desc: props.formData.desc || "",
-          //   logo: props.formData.logo || "",
-          // }}
+          initialValues={{
+            pointOfContact: formData.pointOfContact || "",
+            phoneNumber: formData.phoneNumber || "",
+            timings: formData.timings || "",
+            restaurantType: formData.restaurantType || [],
+            orderType: formData.orderType || [],
+          }}
         >
           <Row gutter={16}>
             <Col span={12}>
@@ -144,6 +108,9 @@ const Step2 = (props) => {
                 <Input
                   placeholder="Please enter Point Of Contact"
                   prefix={<UserOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "pointOfContact");
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -161,10 +128,14 @@ const Step2 = (props) => {
                 <Input
                   placeholder="Please enter phone number"
                   prefix={<PhoneOutlined />}
+                  onChange={(e) => {
+                    inputChanged(e, "phoneNumber");
+                  }}
                 />
               </Form.Item>
             </Col>
           </Row>
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -184,8 +155,10 @@ const Step2 = (props) => {
                     width: "100%",
                   }}
                   placeholder="Please select Restaurant Types"
-                  // defaultValue={['a10', 'c12']}
-                  onChange={handleChange}
+                  // defaultValue={formData.restaurantType || []}
+                  onChange={(value) => {
+                    handleChange(value, "restaurantType");
+                  }}
                   options={restaurantTyes}
                 />
               </Form.Item>
@@ -208,13 +181,16 @@ const Step2 = (props) => {
                     width: "100%",
                   }}
                   placeholder="Please select Order Typs"
-                  // defaultValue={['a10', 'c12']}
-                  onChange={handleChange}
+                  // defaultValue={formData.orderType || []}
+                  onChange={(value) => {
+                    handleChange(value, "orderType");
+                  }}
                   options={orderTyes}
                 />
               </Form.Item>
             </Col>
           </Row>
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -230,43 +206,37 @@ const Step2 = (props) => {
                 <TextArea
                   rows={4}
                   placeholder="Please enter Restaurant Timings"
+                  onChange={(e) => {
+                    inputChanged(e, "timings");
+                  }}
                 />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="orderType"
-                label="Order Type"
+                name="restaurantImages"
+                label="upload Restaurant Images"
                 rules={[
                   {
-                    required: true,
-                    message: "Please enter Order Types",
+                    required: false,
+                    message: "Please upload restorent images",
                   },
                 ]}
               >
-                <Upload
-                  action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                  listType="picture-card"
-                  fileList={fileList}
-                  onPreview={handlePreview}
-                  onChange={handleChange}
+                <input type="file" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item>
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  style={{ width: "100%" }}
                 >
-                  {fileList.length >= 8 ? null : uploadButton}
-                </Upload>
-                {previewImage && (
-                  <Image
-                    wrapperStyle={{
-                      display: "none",
-                    }}
-                    preview={{
-                      visible: previewOpen,
-                      onVisibleChange: (visible) => setPreviewOpen(visible),
-                      afterOpenChange: (visible) =>
-                        !visible && setPreviewImage(""),
-                    }}
-                    src={previewImage}
-                  />
-                )}
+                  Next
+                </Button>
               </Form.Item>
             </Col>
           </Row>
