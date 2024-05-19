@@ -140,7 +140,15 @@ const AntTable = (props) => {
       ...getColumnSearchProps("title"),
       sorter: (a, b) => a.address.length - b.address.length,
       sortDirections: ["descend", "ascend"],
-      render: (text) => <span>{text}</span>,
+      render: (_, record) => (
+        <a
+          onClick={() => {
+            viewRecord(record);
+          }}
+        >
+          {record.title}
+        </a>
+      ),
     },
   ];
   const items = [

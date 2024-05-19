@@ -12,6 +12,7 @@ import {
 import AntTable from "../../ReusableComp/AntTable";
 import restaurantsTableConfig from "./RestaurantsTableConfig";
 import { PlusCircleOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 import {
   failedNotification,
@@ -46,6 +47,7 @@ function Managerestaurants() {
   const [restaurantTyes, setRestaurantTyes] = useState([]);
   const [orderTypes, setorderTypes] = useState([]);
   const [plans, setPlans] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getAllTypesData();
@@ -215,6 +217,9 @@ function Managerestaurants() {
 
   const viewRecord = (record) => {
     setDrawerTitle("View Restaurant  info  of " + record.title);
+
+    navigate(`/ManagerestaurantTypes/viewRestorent/${record._id}`);
+
     setFormData(record);
     setOpen(true);
     setOpenView(true);

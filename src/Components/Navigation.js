@@ -25,6 +25,7 @@ import ManageorderTypes from "./Screen/orderTypes/ManageOrderTypes";
 import Manageplans from "./Screen/plans/ManagePlans";
 import ManageFoodTypes from "./Screen/foodTypes/ManageFoodTypes";
 import Managerestaurants from "./Screen/restaurants/ManageRestaurants";
+import ViewRestaurants from "./Screen/restaurants/ViewRestaurants";
 
 const { Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
@@ -133,7 +134,7 @@ const Navigation = () => {
                 direction: "flex",
                 margin: "auto",
               }}
-              src="./logo.png"
+              src="/logo.png"
             />
           </div>
         ) : (
@@ -146,7 +147,7 @@ const Navigation = () => {
                 direction: "flex",
                 margin: "auto",
               }}
-              src="./logo.png"
+              src="/logo.png"
             />
           </div>
         )}
@@ -211,6 +212,11 @@ const Navigation = () => {
                 exact
                 path="/ManageFoodTypes"
                 element={<ManageFoodTypes key={"ManageFoodTypes"} />}
+              />
+
+              <Route
+                path="ManagerestaurantTypes/viewRestorent/:id"
+                element={<ViewRestaurants key={"viewRestorent"} />}
               />
             </Routes>
           </Router>

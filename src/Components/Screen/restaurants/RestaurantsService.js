@@ -44,3 +44,15 @@ export const deleterestaurants = (id) => {
       });
   });
 };
+
+export const geteRestaurantByid = (id) => {
+  return new Promise((resolve, reject) => {
+    getData(`${moduleRoute}/${id}`)
+      .then((data) => {
+        resolve(data);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
