@@ -218,7 +218,7 @@ function Managerestaurants() {
   const viewRecord = (record) => {
     setDrawerTitle("View Restaurant  info  of " + record.title);
 
-    navigate(`/ManagerestaurantTypes/viewRestorent/${record._id}`);
+    navigate(`/dashboard/Managerestaurants/viewRestorent/${record._id}`);
 
     setFormData(record);
     setOpen(true);
